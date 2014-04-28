@@ -44,8 +44,10 @@ var app = {
 
   addMessage: function(message) {
     // $('#main').append('<div id="chats"></div>');//.attr('id', 'chats');
-    // console.log(message);
-    $('#chats').append('<p>'+message.createdAt+'</p>');
+    if (typeof message.text === 'object') console.log(message.text);
+    if (message.text !== undefined) message = message.text.replace(/[<>]|document.[^ ]/g,'');
+    // [<>]|document.[^ ]
+    $('#chats').append('<p>'+message+'</p>');
   },
 
   addRoom: function(room){
