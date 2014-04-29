@@ -85,4 +85,6 @@ form input[type=text] {
     padding: 10px;
 }
 
-
+.friend {
+    font-weight: bold;
+}

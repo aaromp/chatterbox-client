@@ -64,9 +64,9 @@ var app = {
 
 
     // [<>]|document.[^ ]|\$.[^ ]|\$\(
-    if (room === selected) {
-    $('#chats').append('<p class="' + user + '">' + user + ' : ' + message + '</p>');
 
+    if (room === selectedRoom) {
+      $('#chats').append('<p><a href="#" id="'+ user +'">' + user + '</a>: ' + message + '</p>');
     }
   },
 
@@ -79,12 +79,6 @@ var app = {
   },
 
   renderPage: function(data) {
-    app.clearMessages();
-
-    for (var i = 0; i < data.length; i++) {
-      app.addMessage(data[i]);
-    }
-
     var rooms = {};
     $('#roomSelect').children().remove();
     for (var j = 0; j < data.length; j++) {
@@ -94,11 +88,26 @@ var app = {
     for (var room in rooms) {
       app.addRoom(room);
     }
-    $('#roomSelect').val(selected);
+
+    $('#roomSelect').val(selectedRoom);
+    app.clearMessages();
+
+    for (var i = 0; i < data.length; i++) {
+      app.addMessage(data[i]);
+    }
+
+    for (var friend in friends) {
+      console.log(Object.keys(friends));
+      if(friends[friend]) {
+        $("#chats #"+friend).toggleClass('friend');
+      }
+    }
   }
 };
 
 /* run code */
+//     $("#chats ."+friend).toggleClass('friend');
+
 
 
 
@@ -106,24 +115,38 @@ var query = window.location.search;
 var username = query.slice(query.lastIndexOf('=') + 1);
 var maxNumPosts = 25;
 var refreshLength = 2000;
-var selected = $('#roomSelect').val();
+var selectedRoom = $('#roomSelect').val();
+var selectedFriend = $('#friendSelect').val();
+var friends = {};
 
 $(document).ready(function(){
   $('.clearButton').click(app.clearMessages);
+
   $('#roomSelect').change(function() {
-    selected = $('#roomSelect').val()
+    selectedRoom = $('#roomSelect').val();
   });
+  // $('#friendSelect').change(function() {
+  //   $(this)
+  // });
   $('.input').keypress(function(e) {
 
     if(e.which === 13) {
       var message = {
         username: username,
         text: $(this).val(),
-        roomname: selected
+        roomname: selectedRoom
       };
       app.send(message);
       $(this).val('');
     }
+  });
+  $(document).on('click', 'a', function() {
+    //console.log($(this)[0]);
+    var friend = $(this).attr('id');
+    // $('#friendSelect').val(friend);
+    friends[friend] = !friends[friend];
+    console.log(friends[friend]);
+    // $('#friendSelect').append('<option>' + friend + '</option>');
   });
 
   setInterval(function(){
