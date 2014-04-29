@@ -54,15 +54,28 @@ var app = {
     var message = data.text;
     var room = data.roomname;
 
+    if (user) {
+      user = user.replace(/[<>]|document.[^ ]|\$.[^ ]|\$\(/g,'');
+    }
+
     if (message) {
       message = message.replace(/[<>]|document.[^ ]|\$.[^ ]|\$\(/g,'');
     }
+
+
     // [<>]|document.[^ ]|\$.[^ ]|\$\(
+    if (room === selected) {
     $('#chats').append('<p class="' + user + '">' + user + ' : ' + message + '</p>');
+
+    }
   },
 
   addRoom: function(room){
-    $('#roomSelect').append('<option>' + room + '</option>');
+    if (room) {
+      room = room.replace(/[<>]|document.[^ ]|\$.[^ ]|\$\(/g,'');
+    }
+
+    if (room !== '') $('#roomSelect').append('<option>' + room + '</option>');
   },
 
   renderPage: function(data) {
@@ -73,6 +86,7 @@ var app = {
     }
 
     var rooms = {};
+    $('#roomSelect').children().remove();
     for (var j = 0; j < data.length; j++) {
       rooms[data[j].roomname] = true;
     }
@@ -80,6 +94,7 @@ var app = {
     for (var room in rooms) {
       app.addRoom(room);
     }
+    $('#roomSelect').val(selected);
   }
 };
 
@@ -91,24 +106,27 @@ var query = window.location.search;
 var username = query.slice(query.lastIndexOf('=') + 1);
 var maxNumPosts = 25;
 var refreshLength = 2000;
+var selected = $('#roomSelect').val();
 
 $(document).ready(function(){
   $('.clearButton').click(app.clearMessages);
+  $('#roomSelect').change(function() {
+    selected = $('#roomSelect').val()
+  });
   $('.input').keypress(function(e) {
 
     if(e.which === 13) {
       var message = {
         username: username,
         text: $(this).val(),
-        roomname: ""
+        roomname: selected
       };
-      console.log(message);
       app.send(message);
       $(this).val('');
     }
   });
 
-  //setInterval(function(){
+  setInterval(function(){
     app.fetch();
-  //}, refreshLength);
+  }, refreshLength);
 });
