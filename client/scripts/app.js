@@ -3,7 +3,6 @@
 var app = {
   init: function(){
 
-
   },
   send: function(message){
     $.ajax({
@@ -97,7 +96,6 @@ var app = {
     }
 
     for (var friend in friends) {
-      console.log(Object.keys(friends));
       if(friends[friend]) {
         $("#chats #"+friend).toggleClass('friend');
       }
@@ -125,9 +123,7 @@ $(document).ready(function(){
   $('#roomSelect').change(function() {
     selectedRoom = $('#roomSelect').val();
   });
-  // $('#friendSelect').change(function() {
-  //   $(this)
-  // });
+
   $('.input').keypress(function(e) {
 
     if(e.which === 13) {
@@ -141,12 +137,8 @@ $(document).ready(function(){
     }
   });
   $(document).on('click', 'a', function() {
-    //console.log($(this)[0]);
     var friend = $(this).attr('id');
-    // $('#friendSelect').val(friend);
     friends[friend] = !friends[friend];
-    console.log(friends[friend]);
-    // $('#friendSelect').append('<option>' + friend + '</option>');
   });
 
   setInterval(function(){
